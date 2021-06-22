@@ -5,7 +5,7 @@ const { User } = require("../models/user.model");
 const checkIfUsernameExists = async (req, res, next) => {
   const { username } = req.body;
 
-  const usernameExits = await User.findOne({ username: username.toLowerCase() });
+  const usernameExists = await User.findOne({ username: username.toLowerCase() });
 
   if (usernameExists) {
     return res.status(409).json({
