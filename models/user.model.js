@@ -24,8 +24,11 @@ const UserSchema = new Schema({
   bio: {
     type: String,
     required: "bio is required",
-  }
-})
+  },
+  joinedOn: {
+    type: String
+  },
+});
 
 const User = model("User", UserSchema);
 
