@@ -23,7 +23,6 @@ const UserSchema = new Schema({
   },
   bio: {
     type: String,
-    required: "bio is required",
   },
   joinedOn: {
     type: String
