@@ -1,13 +1,16 @@
-const express = require('express'); 
+const express = require('express');
 const cors = require("cors");
-const {routeNotFound, errorHandler} = require("./middlewares");
+const { routeNotFound, errorHandler } = require("./middlewares");
+const { connectToDatabase } = require("./db/db-connection");
 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json())
+app.use(express.json());
+
+connectToDatabase();
 
 app.get('/', (req, res) => {
   res.send('Hello Express app!')
