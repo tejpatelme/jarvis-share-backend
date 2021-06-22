@@ -14,6 +14,8 @@ const checkIfUsernameExists = async (req, res, next) => {
         "Username is already taken. Please select a different username",
     })
   }
+
+  next();
 }
 
 const checkIfUserExists = async (req, res, next) => {
