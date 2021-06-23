@@ -33,7 +33,30 @@ module.exports.getSinglePostById = async (req, res) => {
   const { userId } = req;
   const { postId } = req.params;
 
-  const singlePost = await Post.findById(postId).lean();
+  const singlePost = await Post.findById(postId).populate("userId", "firstName lastName username").lean();
 
   res.status(200).json({ success: true, singlePost });
+}
+
+module.exports.updateLikes = async (req, res) => {
+  const { userId } = req;
+  const { postId } = req.params;
+  const { userId } = req.body;
+
+  const post = await Post.findById(postId);
+
+  const match = post.likes.likedBy.findIndex((user) => user === userId);
+
+  if (match !== -1) {
+    post.likes.likedBy.splice(1, match);
+    post.likes.count--;
+  }
+  else {
+    post.likes.likedBy.push(userId);
+    post.likes.count++;
+  }
+
+  const updatedPost = await post.save();
+
+  res.status(200).json({ success: true, updatedPost });
 }
