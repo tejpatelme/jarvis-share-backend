@@ -25,7 +25,7 @@ module.exports.signUpUser = async (req, res) => {
 exports.logInUser = async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).lean();
 
   if (user) {
     const passwordValid = await bcrypt.compare(password, user.password);
@@ -35,7 +35,10 @@ exports.logInUser = async (req, res) => {
         expiresIn: "24h",
       });
 
-      return res.status(200).json({ success: true, token });
+      user.__v = undefined;
+      user.password  = undefined;
+
+      return res.status(200).json({ success: true, token, user });
     }
   }
 

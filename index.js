@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require("cors");
 const { routeNotFound, errorHandler } = require("./middlewares");
 const { connectToDatabase } = require("./db/db-connection");
-const { usersRouter } = require("./routes");
+const { usersRouter, postsRouter } = require("./routes");
 
 
 const app = express();
@@ -14,6 +14,8 @@ app.use(express.json());
 connectToDatabase();
 
 app.use("/users", usersRouter);
+app.use("/posts", postsRouter);
+
 
 app.get('/', (req, res) => {
   res.send('Hello Express app!')

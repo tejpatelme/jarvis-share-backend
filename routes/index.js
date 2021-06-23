@@ -1,3 +1,4 @@
 const usersRouter = require("./users.router");
+const postsRouter = require("./posts.router");
 
-module.exports = { usersRouter };
+module.exports = { usersRouter, postsRouter };
