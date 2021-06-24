@@ -41,14 +41,13 @@ module.exports.getSinglePostById = async (req, res) => {
 module.exports.updateLikes = async (req, res) => {
   const { userId } = req;
   const { postId } = req.params;
-  const { userId } = req.body;
 
   const post = await Post.findById(postId);
 
-  const match = post.likes.likedBy.findIndex((user) => user === userId);
+  const match = post.likes.likedBy.findIndex((user) => String(user) === userId);
 
   if (match !== -1) {
-    post.likes.likedBy.splice(1, match);
+    post.likes.likedBy.splice(match, 1);
     post.likes.count--;
   }
   else {
@@ -56,7 +55,8 @@ module.exports.updateLikes = async (req, res) => {
     post.likes.count++;
   }
 
-  const updatedPost = await post.save();
+  let updatedPost = await post.save();
+  await updatedPost.populate("userId", "firstName lastName username").execPopulate();
 
   res.status(200).json({ success: true, updatedPost });
 }

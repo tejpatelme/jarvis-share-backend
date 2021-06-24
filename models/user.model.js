@@ -27,6 +27,8 @@ const UserSchema = new Schema({
   joinedOn: {
     type: String
   },
+  followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  following: [{ type: Schema.Types.ObjectId, ref: "User" }]
 });
 
 const User = model("User", UserSchema);

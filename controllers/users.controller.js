@@ -13,10 +13,11 @@ module.exports.signUpUser = async (req, res) => {
   const newUser = await User.create({
     firstName,
     lastName,
-    username,
-    email,
+    username: username.toLowerCase(),
+    email: email.toLowerCase(),
     password,
-    joinedOn: new Date().toISOString()
+    joinedOn: new Date().toISOString(),
+    bio: ""
   })
 
   res.status(201).json({ success: true, newUser });
@@ -25,7 +26,7 @@ module.exports.signUpUser = async (req, res) => {
 exports.logInUser = async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email }).lean();
+  const user = await User.findOne({ email: email.toLowerCase() }).lean();
 
   if (user) {
     const passwordValid = await bcrypt.compare(password, user.password);
@@ -36,7 +37,7 @@ exports.logInUser = async (req, res) => {
       });
 
       user.__v = undefined;
-      user.password  = undefined;
+      user.password = undefined;
 
       return res.status(200).json({ success: true, token, user });
     }
@@ -46,3 +47,39 @@ exports.logInUser = async (req, res) => {
     .status(401)
     .json({ success: false, errorMessage: "email or password is incorrect" });
 };
+
+module.exports.getAllUsers = async (req, res) => {
+  const users = await User.find({}).select("-password -__v").lean();
+
+  res.status(200).json({ success: true, users });
+}
+
+module.exports.updateFollowingAndFollowersCount = async (req, res) => {
+  const { userId } = req;
+  const { toFollowUserId } = req.body;
+
+  let user = await User.findById(userId);
+  let followUser = await User.findByI(toFollowUserId);
+
+  const userToFollowIndex = user.following.findIndex((user) => user === toFollowUserId);
+
+  if (match !== -1) {
+    //Removing from users following array
+    user.following.splice(userIndex, 1);
+
+    //Removing from followed users followers array
+    const followingUserIndex = followUser.followers.findIndex((user) => userId);
+    followUser.followers.splice = splice(followingUserIndex, 1);
+  }
+  else {
+    //Adding to users following arary
+    user.following.push(toFollowUserId);
+    //Adding to followed users followers array
+    followUser.followers.push(userId);
+  }
+
+  user = await user.save();
+  followUser = await followUser.save();
+
+  res.status(200).json({ success: true, user, followUser });
+}
