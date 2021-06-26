@@ -60,3 +60,9 @@ module.exports.updateLikes = async (req, res) => {
 
   res.status(200).json({ success: true, updatedPost });
 }
+
+module.exports.getAllPosts = async (req, res) => {
+  const posts = await Post.find({}).populate("userId", "firstName lastName username").lean();
+
+  res.status(200).json({ success: true, posts });
+}

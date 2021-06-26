@@ -17,7 +17,9 @@ module.exports.signUpUser = async (req, res) => {
     email: email.toLowerCase(),
     password,
     joinedOn: new Date().toISOString(),
-    bio: ""
+    bio: "",
+    followers: [],
+    following: []
   })
 
   res.status(201).json({ success: true, newUser });
@@ -48,6 +50,13 @@ exports.logInUser = async (req, res) => {
     .json({ success: false, errorMessage: "email or password is incorrect" });
 };
 
+module.exports.getUserById = async (req, res) => {
+  const { userId } = req;
+  const user = await User.findById(userId).lean();
+
+  res.status(200).json({ success: true, user });
+}
+
 module.exports.getAllUsers = async (req, res) => {
   const users = await User.find({}).select("-password -__v").lean();
 
@@ -59,17 +68,17 @@ module.exports.updateFollowingAndFollowersCount = async (req, res) => {
   const { toFollowUserId } = req.body;
 
   let user = await User.findById(userId);
-  let followUser = await User.findByI(toFollowUserId);
+  let followUser = await User.findById(toFollowUserId);
 
-  const userToFollowIndex = user.following.findIndex((user) => user === toFollowUserId);
+  const userToFollowIndex = user.following.findIndex((user) => String(user) === toFollowUserId);
 
-  if (match !== -1) {
+  if (userToFollowIndex !== -1) {
     //Removing from users following array
-    user.following.splice(userIndex, 1);
+    user.following.splice(userToFollowIndex, 1);
 
     //Removing from followed users followers array
-    const followingUserIndex = followUser.followers.findIndex((user) => userId);
-    followUser.followers.splice = splice(followingUserIndex, 1);
+    const followingUserIndex = followUser.followers.findIndex((user) => String(user) === userId);
+    followUser.followers.splice(followingUserIndex, 1);
   }
   else {
     //Adding to users following arary
