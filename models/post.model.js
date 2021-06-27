@@ -5,7 +5,8 @@ const CommentSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User"
   },
-  content: String
+  content: String,
+  date: String,
 })
 
 const PostSchema = new Schema({

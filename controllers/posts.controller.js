@@ -22,6 +22,7 @@ module.exports.createNewPost = async (req, res) => {
       likedBy: []
     },
     postedOn: new Date().toISOString(),
+    comments: []
   });
 
   await newPost.populate("userId", "firstName lastName username").execPopulate();
@@ -65,4 +66,23 @@ module.exports.getAllPosts = async (req, res) => {
   const posts = await Post.find({}).populate("userId", "firstName lastName username").lean();
 
   res.status(200).json({ success: true, posts });
+}
+
+module.exports.updatePostComments = async (req, res) => {
+  const { postId } = req.params;
+  const { userId } = req;
+  const { content } = req.body;
+
+  const post = await Post.findById(postId);
+
+  post.comments.push({
+    userId,
+    content,
+    date: new Date().toISOString()
+  })
+
+  let updatedPost = await post.save();
+  updatedPost = await updatedPost.populate("userId", "firstName lastName username").execPopulate();
+
+  res.status(200).json({ success: true, updatedPost });
 }
