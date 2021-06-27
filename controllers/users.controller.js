@@ -52,6 +52,7 @@ exports.logInUser = async (req, res) => {
 
 module.exports.getUserById = async (req, res) => {
   const { userId } = req;
+
   const user = await User.findById(userId).lean();
 
   res.status(200).json({ success: true, user });
