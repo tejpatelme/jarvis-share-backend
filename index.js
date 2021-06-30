@@ -18,7 +18,7 @@ app.use("/posts", postsRouter);
 
 
 app.get('/', (req, res) => {
-  res.send('Hello Express app!')
+  res.send('Backend API for Jarvis Share social media application')
 });
 
 /**
