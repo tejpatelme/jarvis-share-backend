@@ -86,3 +86,11 @@ module.exports.updatePostComments = async (req, res) => {
 
   res.status(200).json({ success: true, updatedPost });
 }
+
+module.exports.deletePostById = async (req, res) => {
+  const { postId } = req.params;
+
+  const deletedPost = await Post.findByIdAndDelete(postId).select("_id").lean();
+
+  res.status(200).json({ success: true, deletedPost });
+}

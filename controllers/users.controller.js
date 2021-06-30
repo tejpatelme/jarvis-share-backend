@@ -53,7 +53,7 @@ exports.logInUser = async (req, res) => {
 module.exports.getUserById = async (req, res) => {
   const { userId } = req;
 
-  const user = await User.findById(userId).lean();
+  const user = await User.findById(userId).select("-password -__v").lean();
 
   res.status(200).json({ success: true, user });
 }
@@ -68,8 +68,8 @@ module.exports.updateFollowingAndFollowersCount = async (req, res) => {
   const { userId } = req;
   const { toFollowUserId } = req.body;
 
-  let user = await User.findById(userId);
-  let followUser = await User.findById(toFollowUserId);
+  let user = await User.findById(userId).select("-password -__v");
+  let followUser = await User.findById(toFollowUserId).select("-password -__v");
 
   const userToFollowIndex = user.following.findIndex((user) => String(user) === toFollowUserId);
 
@@ -92,4 +92,16 @@ module.exports.updateFollowingAndFollowersCount = async (req, res) => {
   followUser = await followUser.save();
 
   res.status(200).json({ success: true, user, followUser });
+}
+
+module.exports.updateUserData = async (req, res) => {
+  const { userId } = req;
+  const { editData } = req.body;
+
+  const user = await User.findById(userId).select("-password -__v");
+  Object.assign(user, editData);
+
+  await user.save();
+
+  res.status(200).json({ success: true, updatedUser: user });
 }
