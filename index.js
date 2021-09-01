@@ -1,15 +1,16 @@
 const express = require('express');
 const cors = require("cors");
+const fileUpload = require("express-fileupload");
 const { routeNotFound, errorHandler } = require("./middlewares");
 const { connectToDatabase } = require("./db/db-connection");
 const { usersRouter, postsRouter } = require("./routes");
-
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(fileUpload({ useTempFiles: true }));
 
 connectToDatabase();
 

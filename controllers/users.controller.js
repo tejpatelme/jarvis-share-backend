@@ -2,6 +2,10 @@ const { User } = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
+module.exports.addNotifs = async (req,res) => {
+  const users = await User.updateMany({},{notifications: []} );
+  res.json({success: true, users});
+}
 
 module.exports.signUpUser = async (req, res) => {
   const { firstName, lastName, email, username } = req.body;
@@ -18,6 +22,7 @@ module.exports.signUpUser = async (req, res) => {
     password,
     joinedOn: new Date().toISOString(),
     bio: "",
+    notifications: [],
     followers: [],
     following: []
   })
@@ -86,6 +91,12 @@ module.exports.updateFollowingAndFollowersCount = async (req, res) => {
     user.following.push(toFollowUserId);
     //Adding to followed users followers array
     followUser.followers.push(userId);
+    followUser.notifications.push({
+      from: userId,
+      type: "follow",
+      createdAt: new Date().toISOString()
+    })
+
   }
 
   user = await user.save();

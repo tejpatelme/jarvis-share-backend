@@ -9,6 +9,15 @@ const CommentSchema = new Schema({
   date: String,
 })
 
+const MediaSchema = new Schema({
+  mediaURL: {
+    type: String,
+  },
+  mediaType: {
+    type: String
+  }
+})
+
 const PostSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
@@ -19,6 +28,7 @@ const PostSchema = new Schema({
     type: String,
     required: "Content of the post cannot be empty"
   },
+  media: MediaSchema,
   postedOn: {
     type: String,
   },

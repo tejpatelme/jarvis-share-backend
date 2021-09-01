@@ -1,5 +1,24 @@
 const { Schema, model } = require("mongoose");
 
+const NotificationSchema = new Schema({
+  from: {
+    type: Schema.Types.ObjectId,
+    ref: "User"
+  },
+  type: {
+    type: String,
+    required: "Type of notification is required"
+  },
+  createdAt: {
+    type: String,
+    required: "Notification creation time is required"
+  },
+  postId: {
+    type: Schema.Types.ObjectId,
+    ref: "Post"
+  }
+})
+
 const UserSchema = new Schema({
   firstName: {
     type: String,
@@ -27,6 +46,7 @@ const UserSchema = new Schema({
   joinedOn: {
     type: String
   },
+  notifications: [NotificationSchema],
   followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   following: [{ type: Schema.Types.ObjectId, ref: "User" }]
 });
